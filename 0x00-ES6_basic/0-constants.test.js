@@ -15,4 +15,9 @@ describe('test 0-constants.js functions', () => {
     expect.hasAssertions();
     expect(taskNext()).toBe('But sometimes let is okay');
   });
+
+  it('tasks are correctly defined', () => {
+    expect.hasAssertions();
+    expect(`${taskFirst()} ${taskNext()}`).toStrictEqual('I prefer const when I can. But sometimes let is okay');
+  });
 });
