@@ -1,27 +1,34 @@
 const readline = require('readline');
 
-// Create an interface to read from stdin and write to stdout
-const rl = readline.createInterface({
+// Create the readline interface
+const r1 = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
 });
 
-// Display the welcome message
-console.log('Welcome to Holberton School, what is your name?');
+// Check if input is coming from a pipe
+if (!process.stdin.isTTY) {
+  let input = '';
+  process.stdin.on('data', (chunk) => {
+    input += chunk;
+  });
+  process.stdin.on('end', () => {
+    console.log('Welcome to Holberton School, what is your name?\n');
+    console.log(`Your name is: ${input.trim()}`);
+    console.log('This important software is now closing');
+    process.exit(0);
+  });
+} else {
+  // Interactive mode
+  r1.question('Welcome to Holberton School, what is your name? \n', (name) => {
+    console.log(`Your name is: ${name}`);
+    console.log('This important software is now closing');
+    r1.close();
+  });
+}
 
-// Handle user input
-rl.on('line', (input) => {
-  console.log(`Your name is: ${input}`);
-  rl.close(); // Close the readline interface after receiving input
-});
-
-// Handle program termination (Ctrl+C or other signals)
-rl.on('SIGINT', () => {
-  console.log('\nThis important software is now closing');
-  process.exit(0); // Exit the process
-});
-
-// Handle program closure after readline finishes
-rl.on('close', () => {
+// Handle SIGINT (Ctrl+C) gracefully
+r1.on('SIGINT', () => {
   console.log('This important software is now closing');
+  process.exit(0);
 });
